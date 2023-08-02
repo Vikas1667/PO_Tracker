@@ -14,8 +14,8 @@ with open('auth.json') as js:
 logging.basicConfig(filename='app_logger.log', encoding='utf-8', level=logging.DEBUG,filemode="w")
 
 # Create a new client and connect to the  server
-uri = "mongodb+srv://"+db_username+":"+db_pswd+"@cluster0.pkysva5.mongodb.net/?retryWrites=true&w=majority"
-
+uri = "mongodb+srv://"+st.secrets.db_username+":"+st.secrets.db_pswd+"@cluster0.pkysva5.mongodb.net/?retryWrites=true&w=majority"
+# :st.secrets
 @st.experimental_singleton()
 def init_connection():
     return MongoClient(uri,connect=False)

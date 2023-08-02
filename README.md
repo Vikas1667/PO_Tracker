@@ -4,10 +4,10 @@ It also contains code for PO report.
 
 
 
-conda env create -f environment.yml
-conda activate kalika_po_tracker_client
+<code>conda env create -f environment.yml</code>
+<code>conda activate kalika_po_tracker_client</code>
 
-streamlit run po_clients.py
+<code>streamlit run po_clients.py</code>
 
 
 

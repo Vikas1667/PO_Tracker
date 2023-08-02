@@ -10,8 +10,12 @@ import datetime
 logging.basicConfig(filename='app_logger.log', encoding='utf-8', level=logging.DEBUG,filemode="w")
 
 from PIL import Image
-time_stmp=os.path.getmtime('app_logger.log')
-time_mod=datetime.datetime.fromtimestamp(time_stmp)
+try:
+    time_stmp=os.path.getmtime('app_logger.log')
+    time_mod=datetime.datetime.fromtimestamp(time_stmp)
+except Exception as e:
+    st.write(e)
+
 
 def add_logo(logo_path, width, height):
     """Read and return a resized logo"""
@@ -46,25 +50,26 @@ if __name__ == "__main__":
     num_of_days=(datetime.datetime.now()-time_mod).days
     if num_of_days>N:
         os.remove('app_logger.log')
+    try:
+        if PO:
+            plot_items=['Quantity Ordered','Quantity Shipped','Quantity Received','PENDING']
+            df_list=[]
+            columns = ["PO Number", "Item No", "Item Description", "Quantity Shipped"]
 
-    if PO:
-        plot_items=['Quantity Ordered','Quantity Shipped','Quantity Received','PENDING']
-        df_list=[]
-        columns = ["PO Number", "Item No", "Item Description", "Quantity Shipped"]
+            if st.button("Track"):
+                st.write("PO_DB connect inprogress")
+                with st.spinner('Wait for it...'):
+                    po_status_data = mongo_test.find_with_po(PO)
+                    # st.write(po_status_data)
 
-        if st.button("Track"):
-            st.write("PO_DB connect inprogress")
-            with st.spinner('Wait for it...'):
-                po_status_data = mongo_test.find_with_po(PO)
-                # st.write(po_status_data)
+                    if po_status_data!=None:
+                        df=mongo_test.records_dataframe(po_status_data)
+                        # st.table(df)
+                        if len(df) > 0:
+                            st.table(df[['PO Number', 'Item No', 'Item Description', 'Quantity Ordered', 'Material Status']])
 
-                if po_status_data!=None:
-                    df=mongo_test.records_dataframe(po_status_data)
-                    # st.table(df)
-                    if len(df) > 0:
-                        st.table(df[['PO Number', 'Item No', 'Item Description', 'Quantity Ordered', 'Material Status']])
+                    else:
+                        st.write('No Data Updated Please check PO number')
 
-                else:
-                    st.write('No Data Updated Please check PO number')
-
-
+    except Exception as e:
+        st.write('Connection Error please connect after some time')

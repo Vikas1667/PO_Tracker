@@ -1,26 +1,34 @@
-
 import pymongo
 from pymongo.mongo_client import MongoClient
 # from pymongo.server_api import ServerApi
 import streamlit as st
 import pandas as pd
-import json
 import logging
+import json
+
+with open('auth.json') as js:
+    db=json.load(js)
+    db_username=db["db_username"]
+    db_pswd =db["db_pswd"]
+
 logging.basicConfig(filename='app_logger.log', encoding='utf-8', level=logging.DEBUG,filemode="w")
 
 # Create a new client and connect to the  server
-uri = "mongodb+srv://st.secrets.db_username:st.secrets.db_pswd@cluster0.pkysva5.mongodb.net/?retryWrites=true&w=majority"
-
+uri = "mongodb+srv://"+db_username+":"+db_pswd+"@cluster0.pkysva5.mongodb.net/?retryWrites=true&w=majority"
 
 @st.experimental_singleton()
 def init_connection():
     return MongoClient(uri,connect=False)
 
-client = init_connection()
-mng_db = client['kalika_data']
-collection_name='kalika_po'
-db_cm = mng_db[collection_name]
+try:
+    client = init_connection()
+    mng_db = client['kalika_data']
+    collection_name='kalika_po'
+    # collection_name='po_admin'
 
+    db_cm = mng_db[collection_name]
+except Exception as e:
+    logging.error('Unable to connect to DB please update the ip address in DB')
 
 
 def find_mongo():
@@ -52,7 +60,7 @@ def find_with_po(po_number):
 
     except Exception as e:
         logging.error(e)
-        st.write('Check PO number or Connection error')
+        st.write('Check PO number or No data for PO you enter')
         return "Connection error due to{}".format(e)
 
 

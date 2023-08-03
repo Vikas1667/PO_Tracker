@@ -45,6 +45,8 @@ if __name__ == "__main__":
     st.title("PO TRACKER")
 
     PO = st.text_input("Enter your PO Number"," ")
+    PO = PO.replace(" ","").upper()
+
     df_list=[]
     N=15
     num_of_days=(datetime.datetime.now()-time_mod).days

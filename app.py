@@ -45,7 +45,7 @@ if __name__ == "__main__":
     st.title("PO TRACKER")
 
     PO = st.text_input("Enter your PO Number"," ")
-    PO = PO.replace(" ","").upper()
+    PO = PO.replace(" ","").upper().replace(",",'')
 
     df_list=[]
     N=15
